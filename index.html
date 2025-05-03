@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Kelowna to Big White Route Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+    }
+    .leaflet-container {
+      background: #f0f0f0;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([49.8625, -119.5], 9);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    const violet = '#593F92';
+    const charcoal = '#333333';
+
+    const locations = {
+      ylw: { name: "Kelowna International Airport (YLW)", coords: [49.9564, -119.3772] },
+      downtown: { name: "Downtown Kelowna", coords: [49.8844, -119.4956] },
+      bigwhite: { name: "Big White Ski Resort", coords: [49.7518, -118.9309] },
+      mainDestination: { name: "Main Destination", coords: [49.7207762536725, -118.92164580244379] },
+      gemLake: { name: "Gem Lake Chairlift", coords: [49.7305, -118.9361] }
+    };
+
+    function addMarker(loc, icon) {
+      const marker = L.marker(loc.coords, {
+        icon: L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div style="background:${violet}; color:white; padding:4px 8px; border-radius:8px; font-size:12px;">${icon}</div>`,
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        })
+      }).addTo(map);
+      marker.bindPopup(loc.name);
+    }
+
+    addMarker(locations.ylw, '✈️');
+    addMarker(locations.downtown, '🏙️');
+    addMarker(locations.bigwhite, '🎿');
+    addMarker(locations.mainDestination, '⭐');
+    addMarker(locations.gemLake, '🚡');
+
+    const route = L.polyline([
+      locations.ylw.coords,
+      locations.downtown.coords,
+      locations.bigwhite.coords
+    ], {
+      color: violet,
+      weight: 4,
+      opacity: 0.9,
+      smoothFactor: 1
+    }).addTo(map);
+
+    map.fitBounds(route.getBounds(), { padding: [20, 20] });
+  </script>
+</body>
+</html>
